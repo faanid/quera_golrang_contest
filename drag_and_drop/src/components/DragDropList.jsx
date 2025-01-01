@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 function DragDropList() {
-  const [items, setItems] = useState(["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]);
-  const [draggedIndex, setDraggedIndex] = useState(null);
+  const [items, setItems] = useState([
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5",
+  ]);
+  const draggedIndexRef = useRef(null);
 
   const handleDragStart = (index) => {
-    setDraggedIndex(index);
+    draggedIndexRef.current = index;
   };
 
   const handleDragOver = (event) => {
@@ -13,14 +19,14 @@ function DragDropList() {
   };
 
   const handleDrop = (index) => {
-    if (draggedIndex === null) return;
+    if (draggedIndexRef.current === null) return;
 
     const updatedItems = [...items];
-    const [draggedItem] = updatedItems.splice(draggedIndex, 1);
+    const [draggedItem] = updatedItems.splice(draggedIndexRef.current, 1);
     updatedItems.splice(index, 0, draggedItem);
 
     setItems(updatedItems);
-    setDraggedIndex(null);
+    draggedIndexRef.current = null;
   };
 
   return (
