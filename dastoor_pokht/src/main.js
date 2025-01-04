@@ -1,51 +1,56 @@
-function prepare(items, nextStep) {
-    return new Promise((complete) => {
-        console.log(`Dar hale amade sazi: ${items.join(", ")}`);
-        setTimeout(() => {
-            complete(nextStep("preparing"));
-        }, 500);
+function prepare(ingredients, callback) {
+  console.log(`preparing stuffs: ${ingredients.join(", ")}`);
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(callback("preparing"));
+    }, 500);
+  });
+}
+
+function cooking(callback) {
+  console.log("making an omelette ...");
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(callback("making"));
+    }, 2000);
+  });
+}
+
+function serve(callback) {
+  console.log("serving food ...");
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(callback("serving"));
     });
+  });
 }
 
-function cooking(nextStep) {
-    return new Promise((complete) => {
-        console.log("dar hale anjam");
-        setTimeout(() => {
-            complete(nextStep("making"));
-        }, 2000);
-    });
+function eat(callback) {
+  console.log("eating ...");
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(callback("eating"));
+    }, 1000);
+  });
 }
 
-function serve(nextStep) {
-    return new Promise((complete) => {
-        console.log("put some food ");
-        setTimeout(() => {
-            complete(nextStep("serving"));
-        }, 500);
-    });
+function doneMessage(prevStep) {
+  console.log(`${prevStep} done, next step ...`);
 }
 
-function eat(nextStep) {
-    return new Promise((complete) => {
-        console.log("enjoy!!");
-        setTimeout(() => {
-            complete(nextStep("eating"));
-        }, 1000);
-    });
-}
+function startCooking(stuffs) {
+  const ingredients = stuffs;
+  const callback = doneMessage;
 
-function doneMessage(step) {
-    console.log(`${step} next step...`);
-    return `${step} next step...`;
-}
-
-function startCooking(ingredients) {
-    prepare(ingredients, doneMessage)
-        .then(() => cooking(doneMessage))
-        .then(() => serve(doneMessage))
-        .then(() => eat(doneMessage))
-        .then(() => console.log("Anjam shod!"))
-        .catch((err) => console.error("Error", err));
+  prepare(ingredients, doneMessage)
+    .then(() => cooking(callback))
+    .then(() => serve(callback))
+    .then(() => eat(callback))
+    .then(() => console.log("process is done"));
 }
 
 module.exports = { prepare, cooking, serve, eat, doneMessage };
